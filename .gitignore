@@ -25,6 +25,17 @@ profile.cov
 go.work
 go.work.sum
 
+# Build output
+bin/
+.task/
+*.syso
+
+# Frontend dependencies
+node_modules/
+
+# macOS
+.DS_Store
+
 # env file
 .env
 

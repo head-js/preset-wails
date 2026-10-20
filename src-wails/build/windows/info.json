@@ -1,0 +1,15 @@
+{
+	"fixed": {
+		"file_version": "0.1.0"
+	},
+	"info": {
+		"0409": {
+			"ProductVersion": "0.1.0",
+			"CompanyName": "preset-wails",
+			"FileDescription": "Minimal Wails v3 app",
+			"LegalCopyright": "© 2026, preset-wails",
+			"ProductName": "PresetWails",
+			"Comments": "Minimal Wails v3 app"
+		}
+	}
+}

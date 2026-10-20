@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  go:mod:tidy:
+    summary: Runs `go mod tidy`
+    internal: true
+    # Universal/multi-arch builds invoke this concurrently from parallel deps;
+    # two `go mod tidy` processes racing on go.mod can corrupt it (#4637).
+    run: once
+    cmds:
+      - go mod tidy
+
+  build:frontend:
+    summary: No-op; dev mode serves src/ via Vite, no production build yet
+    internal: true
+
+  dev:frontend:
+    summary: Starts the Vite dev server (invoked by `wails3 dev`)
+    internal: true
+    dir: "{{.ROOT_DIR}}/.."
+    cmds:
+      - pnpm dev:frontend
+
+  update:build-assets:
+    summary: Updates the build assets
+    dir: build
+    cmds:
+      - go tool wails3 update build-assets -name "{{.APP_NAME}}" -binaryname "{{.APP_NAME}}" -config config.yml -dir .

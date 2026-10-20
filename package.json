@@ -1,0 +1,11 @@
+{
+  "name": "preset-wails",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:frontend": "vite"
+  },
+  "devDependencies": {
+    "vite": "6.4.2"
+  }
+}
