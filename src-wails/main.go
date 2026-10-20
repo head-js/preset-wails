@@ -1,48 +1,38 @@
 package main
 
 import (
+	"fmt"
 	"io/fs"
 	"log"
-	"net/http"
-	"strings"
+	"os"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
 )
-
-const apiVersion = "0.1.0"
 
 type emptyFS struct{}
 
 func (emptyFS) Open(string) (fs.File, error) { return nil, fs.ErrNotExist }
 
-func newAPIHandler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /api/version", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_, _ = w.Write([]byte(`{"version":"` + apiVersion + `"}`))
-	})
-	return mux
-}
-
-func newAppHandler(asset, api http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, "/api/") {
-			api.ServeHTTP(w, r)
-			return
-		}
-		asset.ServeHTTP(w, r)
-	})
-}
-
 func main() {
+	if err := run(); err != nil {
+		log.Printf("error: %v", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
+	srv, err := startAPIServer(apiListenAddr, newAPIHandler())
+	if err != nil {
+		return fmt.Errorf("start API server on %s: %w", apiListenAddr, err)
+	}
+	defer srv.Stop()
+	log.Printf("API server listening on %s (local client: %s)", apiListenAddr, apiClientURL)
+
 	app := application.New(application.Options{
 		Name:        "preset-wails",
 		Description: "Minimal Wails v3 app",
 		Assets: application.AssetOptions{
-			Handler: newAppHandler(
-				application.AssetFileServerFS(emptyFS{}),
-				newAPIHandler(),
-			),
+			Handler: application.AssetFileServerFS(emptyFS{}),
 		},
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: false,
@@ -50,7 +40,10 @@ func main() {
 		Windows: application.WindowsOptions{
 			DisableQuitOnLastWindowClosed: true,
 		},
+		OnShutdown: srv.Stop,
 	})
+
+	go monitorAPIServer(app, srv)
 
 	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:        "Hello Wails V3",
@@ -61,7 +54,12 @@ func main() {
 
 	setupTray(app, window)
 
-	if err := app.Run(); err != nil {
-		log.Fatal(err)
-	}
+	return app.Run()
 }
+
+func monitorAPIServer(app *application.App, srv *apiServer) {
+	err := <-srv.Err()
+	log.Printf("API server failed: %v; quitting application", err)
+	app.Quit()
+}
+
