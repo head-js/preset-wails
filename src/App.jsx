@@ -16,27 +16,15 @@ function App() {
   }, []);
 
   return (
-    <div style={styles.container}>
-      <h1>Hello React</h1>
+    <div className="flex h-full flex-col items-center justify-center gap-4 overflow-hidden">
+      <h1 className="text-2xl font-bold">Hello React</h1>
       <p>Count: {count}</p>
-      <button onClick={() => setCount((c) => c + 1)}>+1</button>
+      <button className="btn btn-primary" onClick={() => setCount((c) => c + 1)}>
+        +1
+      </button>
       {error ? <p>Error: {error}</p> : <p>App version: {version ?? "Loading…"}</p>}
     </div>
   );
 }
-
-const styles = {
-  container: {
-    height: "100vh",
-    background: "rgba(0, 0, 0, 0.5)",
-    color: "#fff",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "16px",
-    overflow: "hidden",
-  },
-};
 
 export default App;
