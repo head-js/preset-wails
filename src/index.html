@@ -5,16 +5,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Hello Wails V3</title>
 	<style>
-		body { font-family: -apple-system, system-ui, sans-serif; margin: 2rem; }
-		#status { color: #666; margin-top: 0.5rem; }
-		#version { font-weight: 600; }
-		.error { color: #b00020; }
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		html, body, #root {
+			height: 100%;
+			overflow: hidden;
+		}
 	</style>
 </head>
 <body>
-	<h1>Hello Wails V3</h1>
-	<div id="status">Loading version…</div>
-	<div id="version" hidden></div>
-	<script type="module" src="./main.js"></script>
+	<div id="root"></div>
+	<script type="module" src="./main.jsx"></script>
 </body>
 </html>
