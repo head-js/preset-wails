@@ -45,15 +45,21 @@ func main() {
 			),
 		},
 		Mac: application.MacOptions{
-			ApplicationShouldTerminateAfterLastWindowClosed: true,
+			ApplicationShouldTerminateAfterLastWindowClosed: false,
+		},
+		Windows: application.WindowsOptions{
+			DisableQuitOnLastWindowClosed: true,
 		},
 	})
 
-	app.Window.NewWithOptions(application.WebviewWindowOptions{
-		Title:  "Hello Wails V3",
-		Width:  800,
-		Height: 600,
+	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
+		Title:        "Hello Wails V3",
+		Width:        800,
+		Height:       600,
+		AlwaysOnTop: true,
 	})
+
+	setupTray(app, window)
 
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
