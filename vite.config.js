@@ -12,4 +12,8 @@ export default defineConfig({
     port,
     strictPort: true,
   },
+  build: {
+    outDir: "../src-wails/dist",
+    emptyOutDir: true,
+  },
 });

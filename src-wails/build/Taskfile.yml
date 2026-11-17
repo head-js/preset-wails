@@ -11,8 +11,11 @@ tasks:
       - go mod tidy
 
   build:frontend:
-    summary: No-op; dev mode serves src/ via Vite, no production build yet
+    summary: Builds the frontend production bundle into src-wails/dist (embedded by main.go)
     internal: true
+    dir: "{{.ROOT_DIR}}/.."
+    cmds:
+      - pnpm build:frontend
 
   dev:frontend:
     summary: Starts the Vite dev server (invoked by `wails3 dev`)

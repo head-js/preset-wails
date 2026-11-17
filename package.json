@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "dev:frontend": "vite"
+    "dev:frontend": "vite",
+    "build": "cd src-wails && go tool wails3 task package",
+    "build:frontend": "vite build"
   },
   "dependencies": {
     "react": "18.3.1",
