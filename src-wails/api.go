@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -15,7 +17,27 @@ func newAPIHandler() http.Handler {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"version":"` + apiVersion + `"}`))
 	})
+	mux.HandleFunc("GET /api/keyring", func(w http.ResponseWriter, r *http.Request) {
+		value, err := loadCredential(DemoAccount)
+		w.Header().Set("Content-Type", "application/json")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			writeJSON(w, map[string]string{"error": err.Error()})
+			return
+		}
+		writeJSON(w, map[string]string{
+			"service": CredentialService,
+			"account": DemoAccount,
+			"value":   value,
+		})
+	})
 	return corsMiddleware(mux)
+}
+
+func writeJSON(w http.ResponseWriter, payload any) {
+	if err := json.NewEncoder(w).Encode(payload); err != nil {
+		log.Printf("write json response: %v", err)
+	}
 }
 
 func corsMiddleware(next http.Handler) http.Handler {

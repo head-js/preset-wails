@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	apiListenAddr = "0.0.0.0:20080"
-	apiClientURL  = "http://127.0.0.1:20080"
+	apiListenAddr = "0.0.0.0:8080"
+	apiClientURL  = "http://127.0.0.1:8080"
 )
 
 type apiServer struct {
